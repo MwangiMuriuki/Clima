@@ -29,6 +29,7 @@ class ActivityRegister : AppCompatActivity() {
     var email: String? = null
     var password: String? = null
     var display_picture: String? = null
+    var downloadUri: String? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,13 +56,32 @@ class ActivityRegister : AppCompatActivity() {
 
     }
 
-    private fun validateFields() {
-        var resultUriString: String? = resultUri.toString()
-        var fullName: String? = fullName.text.toString()
-        var emailAddress: String? = regEmail.text.toString()
-        var password: String? = regPassword.text.toString()
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            val result = CropImage.getActivityResult(data)
+            if (resultCode == RESULT_OK) {
+                resultUri = result.uri
+                registerProfilePicture.setImageURI(resultUri)
+                downloadUri = resultUri.toString()
+                Toast.makeText(this@ActivityRegister, downloadUri, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 
-       if(fullName.isNullOrEmpty()){
+     fun validateFields() {
+        val fullName: String? = fullName.text.toString()
+        val emailAddress: String? = regEmail.text.toString()
+        val password: String? = regPassword.text.toString()
+
+       if(downloadUri.isNullOrEmpty()){
+           Toast.makeText(
+                   this@ActivityRegister,
+                   " Please select a profile picture ",
+                   Toast.LENGTH_LONG
+           ).show()
+        }
+        else if(fullName.isNullOrEmpty()){
             Toast.makeText(
                 this@ActivityRegister,
                 " Please enter your Full Name ",
@@ -96,15 +116,13 @@ class ActivityRegister : AppCompatActivity() {
         }
         else{
             registerNewUser(fullName, emailAddress, password)
-
         }
     }
 
-    private fun registerNewUser(fullName: String, emailAddress: String, password: String) {
+    fun registerNewUser(fullName: String, emailAddress: String, password: String) {
 
         mAuth?.createUserWithEmailAndPassword(emailAddress, password)?.addOnCompleteListener {
             if (it.isSuccessful){
-                // Sign in success, update UI with the signed-in user's information
                 // Sign in success, update UI with the signed-in user's information
                 Log.d("SUCCESS_TAG", "createUserWithEmail:success")
                 val user = mAuth!!.currentUser
@@ -118,7 +136,6 @@ class ActivityRegister : AppCompatActivity() {
                         if (!task.isSuccessful) {
                             throw task.exception!!
                         }
-
                         // Continue with the task to get the download URL
                         mStorageRef.downloadUrl
                     }.addOnCompleteListener { task ->
@@ -126,8 +143,8 @@ class ActivityRegister : AppCompatActivity() {
                             val downloadUri = task.result!!
                             display_picture = downloadUri.toString()
                             val modelClassUsers = UserDetailsDataClass(
-                                full_Name,
-                                email,
+                                fullName,
+                                emailAddress,
                                 userID,
                                 display_picture
                             )
@@ -136,7 +153,7 @@ class ActivityRegister : AppCompatActivity() {
                                     if (task.isSuccessful) {
                                         Toast.makeText(
                                             this@ActivityRegister,
-                                            "Registration Successful!!! Welcome To Kingdom Worship",
+                                            "Registration Successful!!!",
                                             Toast.LENGTH_LONG
                                         ).show()
                                     } else {
@@ -146,8 +163,17 @@ class ActivityRegister : AppCompatActivity() {
                                             Toast.LENGTH_LONG
                                         ).show()
                                     }
-                                }
-                        } else {
+                                }.addOnFailureListener {
+                                        var error: String? = task.exception.toString()
+
+                                        Toast.makeText(
+                                                applicationContext,
+                                                error,
+                                                Toast.LENGTH_LONG
+                                        ).show()
+                                    }
+                        }
+                        else {
                             Toast.makeText(
                                 applicationContext,
                                 "Error Creating Account. Please try again Later. ",
@@ -176,19 +202,6 @@ class ActivityRegister : AppCompatActivity() {
 
     private fun isEmailValid(login_email: String): Boolean {
         return login_email.contains("@")
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            val result = CropImage.getActivityResult(data)
-            if (resultCode == RESULT_OK) {
-                resultUri = result.uri
-                registerProfilePicture.setImageURI(resultUri)
-                val downloadUri: String = resultUri.toString()
-                Toast.makeText(this@ActivityRegister, downloadUri, Toast.LENGTH_LONG).show()
-            }
-        }
     }
 
     private fun updateUI(user: FirebaseUser) {

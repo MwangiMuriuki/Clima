@@ -153,7 +153,7 @@
                                 android:layout_height="40dp"
                                 android:gravity="center_vertical"
                                 android:padding="5dp"
-                                android:textSize="16sp"
+                                android:textSize="18sp"
                                 android:textColor="@color/textColorPrimary"
                                 android:inputType="textEmailAddress"
                                 android:fontFamily="@font/dosis_medium" />
@@ -191,7 +191,7 @@
                                 android:layout_height="40dp"
                                 android:gravity="center_vertical"
                                 android:padding="5dp"
-                                android:textSize="16sp"
+                                android:textSize="18sp"
                                 android:textColor="@color/textColorPrimary"
                                 android:inputType="textEmailAddress"
                                 android:fontFamily="@font/dosis_medium" />
@@ -232,7 +232,7 @@
                                 android:layout_height="40dp"
                                 android:gravity="center_vertical"
                                 android:padding="5dp"
-                                android:textSize="16sp"
+                                android:textSize="18sp"
                                 android:textColor="@color/textColorPrimary"
                                 android:inputType="textPassword"
                                 android:fontFamily="@font/dosis_medium" />
@@ -275,7 +275,7 @@
                         android:text="Already have an account?"
                         android:textAlignment="center"
                         android:textColor="@color/colorPrimaryDark"
-                        android:textSize="14sp" />
+                        android:textSize="16sp" />
 
                     <TextView
                         android:layout_width="match_parent"

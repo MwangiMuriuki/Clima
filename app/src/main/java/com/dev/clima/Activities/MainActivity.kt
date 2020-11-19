@@ -1,44 +1,214 @@
 package com.dev.clima.Activities
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.navigation.NavigationView
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import androidx.drawerlayout.widget.DrawerLayout
+import android.view.View
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.dev.clima.Adapters.NavigationDrawerAdapter
+import com.dev.clima.DataClasses.NavigationDrawerDataClass
+import com.dev.clima.DataClasses.UserDetailsDataClass
+import com.dev.clima.Fragments.FragmentHome
+import com.dev.clima.Fragments.FragmentMyTasks
+import com.dev.clima.Fragments.FragmentProfile
+import com.dev.clima.Fragments.FragmentScanner
 import com.dev.clima.R
+import com.dev.clima.Utilities.PreferenceManager
+import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private var navDrawerAdapter: NavigationDrawerAdapter? = null
+    var recyclerView: RecyclerView? = null
+    var toggle: ActionBarDrawerToggle? = null
+    private var mAuth = FirebaseAuth.getInstance()
+    var firebaseFirestore = FirebaseFirestore.getInstance()
+    var userLoggedIn = mAuth.currentUser
+    var preferenceManager: PreferenceManager? = null
+
+
+    val myList: MutableList<UserDetailsDataClass> = ArrayList<UserDetailsDataClass>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayShowTitleEnabled(true)
 
-        val fab: FloatingActionButton = findViewById(R.id.fab)
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
+        preferenceManager = PreferenceManager(applicationContext)
+
+        recyclerView = findViewById(R.id.navItemslist)
+
+        mAuth = FirebaseAuth.getInstance()
+        userLoggedIn = mAuth.currentUser
+
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
-        val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+
+         toggle = ActionBarDrawerToggle(
+             this,
+             drawerLayout,
+             toolbar,
+             R.string.navigation_drawer_open,
+             R.string.navigation_drawer_close
+         )
+        drawerLayout.addDrawerListener(toggle!!)
+        toggle!!.syncState()
+
+        showMainFragment()
+        setupNavDrawerMenu()
+
+        //Fetch user details from FirebaseFirestore
+        if (userLoggedIn != null) {
+            val userID: String = userLoggedIn!!.uid
+
+            firebaseFirestore.collection("Users").document(userID).get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val documentSnapshot = task.result
+                        if (documentSnapshot != null && documentSnapshot.exists()) {
+                            val userData = UserDetailsDataClass(
+                                documentSnapshot.getString("full_Name"),
+                                documentSnapshot.getString("email"),
+                                documentSnapshot.getString("user_id"),
+                                documentSnapshot.getString("display_picture")
+                            )
+                            myList.add(userData)
+
+                            val fname = documentSnapshot.getString("full_Name")
+                            val pic = documentSnapshot.getString("display_picture")
+                            profileUserName.text = fname
+                            preferenceManager?.setFullName(fname)
+
+                            if (pic != null) {
+                                val imageUri = Uri.parse(documentSnapshot.getString("display_picture"))
+                                Glide.with(this@MainActivity).load(imageUri).into(userProfilePicture)
+                            }
+                        }
+                        else {
+                            Log.e("SNAPSHOT_ERROR", "User Does not exist")
+                        }
+                    }
+                    else {
+
+                        Log.e("TASK_ERROR", task.exception?.message.toString())
+                    }
+                }
+                .addOnFailureListener {
+                    Log.e("TASK_ERROR", it.message.toString())
+
+                }
+        }
+
+        //User Logout
+        logout.setOnClickListener {
+            val logout = Intent(applicationContext, ActivityLogin::class.java)
+            mAuth.signOut()
+            startActivity(logout)
+            finish()
+        }
+
+    }
+    /*SET UP DASHBOARD AS DEFAULT SREEN*/
+    private fun showMainFragment() {
+        val fragment: Fragment = FragmentHome()
+        val fragmentManager = supportFragmentManager
+        fragmentManager.beginTransaction()
+            .replace(R.id.content_main, fragment)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE) //.addToBackStack(getString(R.string.revenue_fragment))
+            .commit()
+    }
+
+    /*ADD NAVIGATION DRAWER ITEMS*/
+    private fun setupNavDrawerMenu() {
+        val navDrawerItems: MutableList<NavigationDrawerDataClass> = ArrayList<NavigationDrawerDataClass>()
+
+        /*DASHBOARD*/
+        val dashboard = NavigationDrawerDataClass()
+        dashboard.item_name = (getString(R.string.dashboard))
+        dashboard.fragment = true
+        dashboard.fragmentName = FragmentHome()
+        dashboard.image_resource = (R.drawable.dashboard_icon)
+        navDrawerItems.add(dashboard)
+
+        /*PROFILE*/
+        val myProfile = NavigationDrawerDataClass()
+        myProfile.item_name = (getString(R.string.profile))
+        myProfile.fragment = true
+        myProfile.fragmentName = FragmentProfile()
+        myProfile.image_resource = (R.drawable.profile_icon)
+        navDrawerItems.add(myProfile)
+
+        /*MY TASKS*/
+        val myTasks = NavigationDrawerDataClass()
+        myTasks.item_name = (getString(R.string.tasks))
+        myTasks.fragment = true
+        myTasks.fragmentName = FragmentMyTasks()
+        myTasks.image_resource = (R.drawable.tasks_icon)
+        navDrawerItems.add(myTasks)
+
+        /*SCANNER*/
+        val myScanner = NavigationDrawerDataClass()
+        myScanner.item_name = (getString(R.string.scanner))
+        myScanner.fragment = true
+        myScanner.fragmentName = FragmentScanner()
+        myScanner.image_resource = (R.drawable.bar_code_icon)
+        navDrawerItems.add(myScanner)
+
+        val layoutManager = LinearLayoutManager(this)
+
+        recyclerView?.layoutManager = layoutManager
+        recyclerView?.adapter = NavigationDrawerAdapter(this@MainActivity, navDrawerItems,
+            object : NavigationDrawerAdapter.NavigationDrawerListener {
+                override fun onNavMenuItemSelected(navDrawerDataClass: NavigationDrawerDataClass?) {
+                    if (navDrawerDataClass != null) {
+                        val fragment: Fragment
+                        /*DASHBOARD*/
+                        if (navDrawerDataClass.item_name.equals(getString(R.string.dashboard))) {
+                            fragment = navDrawerDataClass.fragmentName!!
+                            val ft = supportFragmentManager.beginTransaction()
+                            ft.replace(R.id.content_main, fragment)
+                            ft.commit()
+                        } else if (navDrawerDataClass.item_name.equals(getString(R.string.profile))) {
+                            fragment = navDrawerDataClass.fragmentName!!
+                            val ft = supportFragmentManager.beginTransaction()
+                            ft.replace(R.id.content_main, fragment)
+                            ft.commit()
+                        } else if (navDrawerDataClass.item_name.equals(getString(R.string.tasks))) {
+                            fragment = navDrawerDataClass.fragmentName!!
+                            val ft = supportFragmentManager.beginTransaction()
+                            ft.replace(R.id.content_main, fragment)
+                            ft.commit()
+                        } else if (navDrawerDataClass.item_name.equals(getString(R.string.scanner))) {
+                            fragment = navDrawerDataClass.fragmentName!!
+                            val ft = supportFragmentManager.beginTransaction()
+                            ft.replace(R.id.content_main, fragment)
+                            ft.commit()
+                        }
+
+                        val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
+                        drawer.closeDrawer(GravityCompat.START)
+                    }
+                }
+            })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -47,8 +217,4 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
-    }
 }

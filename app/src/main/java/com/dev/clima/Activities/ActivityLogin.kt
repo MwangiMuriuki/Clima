@@ -7,6 +7,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dev.clima.R
+import com.dev.clima.Utilities.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.activity_login.*
@@ -21,6 +22,8 @@ class ActivityLogin : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         mAuth = FirebaseAuth.getInstance()
+//        preferenceManager = PreferenceManager(applicationContext)
+
 
         forgotPassword.setOnClickListener {
             val intent: Intent = Intent(applicationContext, ActivityResetPassword::class.java)
@@ -50,7 +53,11 @@ class ActivityLogin : AppCompatActivity() {
             ).show()
         }
         else if (!emailAddress.isNullOrEmpty() && !isEmailValid(emailAddress)){
-            Toast.makeText(this@ActivityLogin, " Please Enter a valid Email address ", Toast.LENGTH_LONG)
+            Toast.makeText(
+                this@ActivityLogin,
+                " Please Enter a valid Email address ",
+                Toast.LENGTH_LONG
+            )
                 .show()
         }
         else if (password.isNullOrEmpty()){

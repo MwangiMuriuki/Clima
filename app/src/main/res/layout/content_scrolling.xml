@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".Activities.ActivitySingleArticle"
+    tools:showIn="@layout/activity_single_article"
+    android:background="@color/lightGreenBgColor">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/articleTitleTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="Title:"
+            android:fontFamily="@font/dosis_semibold"
+            android:textSize="24sp"
+            android:maxLines="2"
+            android:textColor="@color/colorPrimaryDark"/>
+
+        <TextView
+            android:id="@+id/articleSourceTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="Source:"
+            android:fontFamily="@font/dosis"
+            android:textStyle="italic"
+            android:textSize="16sp"
+            android:maxLines="2"
+            android:textColor="@color/textColorTertiary"/>
+
+        <TextView
+            android:id="@+id/articleContentView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text=""
+            android:textSize="18sp"
+            android:textIsSelectable="true"
+            android:textColor="@color/textColorPrimary"
+            android:enabled="true"
+            android:fontFamily="@font/dosis_medium"/>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

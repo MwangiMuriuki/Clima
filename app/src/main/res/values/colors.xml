@@ -6,6 +6,11 @@
     <color name="colorAccent">#d81b60</color>
     <color name="textColorPrimary">#000000</color>
     <color name="textColorSecondary">#ffffff</color>
+    <color name="textColorTertiary">#585858</color>
     <color name="lightGreenBgColor">#F8FEFF</color>
     <color name="colorWhite">#ffffff</color>
+    <color name="anotherGreen">#E7F5F7</color>
+    <color name="colorGrey">#707070</color>
+    <color name="transparentBlack">#80000000</color>
+
 </resources>
