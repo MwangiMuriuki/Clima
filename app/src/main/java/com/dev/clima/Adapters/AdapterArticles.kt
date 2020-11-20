@@ -44,9 +44,7 @@ class AdapterArticles(val context: Context, val vidPicList: List<ArticlesDataCla
             intent.putExtra("articleSource", articleSource)
             intent.putExtra("articleImage", articleThumbnail)
             context.startActivity(intent)
-
         }
-
     }
 
     override fun getItemCount(): Int {
@@ -68,6 +66,5 @@ class ArticlesViewHolder(inflater: LayoutInflater, parent: ViewGroup) : Recycler
         articleImage = itemView.findViewById(R.id.articleImage)
         mainLayout = itemView.findViewById(R.id.mainLayoutArticles)
     }
-
 
 }

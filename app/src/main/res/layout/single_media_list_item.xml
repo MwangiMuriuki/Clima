@@ -22,6 +22,21 @@
             android:src="@drawable/test_img"
             android:scaleType="centerCrop"/>
 
+        <LinearLayout
+            android:id="@+id/playVideoIcon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparentBlack"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/play_video"
+                android:scaleType="centerCrop"/>
+
+        </LinearLayout>
+
     </androidx.cardview.widget.CardView>
 
     <TextView

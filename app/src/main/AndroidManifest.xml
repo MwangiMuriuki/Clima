@@ -3,6 +3,7 @@
     package="com.dev.clima">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -15,10 +16,20 @@
         android:roundIcon="@drawable/app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.Clima">
-        <activity android:name=".Activities.ActivityAddMedia"
+        <activity android:name=".Activities.ActivityScanner"
             android:theme="@style/Theme.Clima.NoActionBar"/>
-        <activity android:name=".Activities.ActivityAddArticle"
-            android:theme="@style/Theme.Clima.NoActionBar"/>
+        <activity
+            android:name=".Activities.ActivityMyScans"
+            android:theme="@style/Theme.Clima.NoActionBar" />
+        <activity
+            android:name=".Activities.ActivityViewMedia"
+            android:theme="@style/Theme.Clima.NoActionBar" />
+        <activity
+            android:name=".Activities.ActivityAddMedia"
+            android:theme="@style/Theme.Clima.NoActionBar" />
+        <activity
+            android:name=".Activities.ActivityAddArticle"
+            android:theme="@style/Theme.Clima.NoActionBar" />
         <activity
             android:name=".Activities.ActivitySingleArticle"
             android:label="@string/title_activity_single_article"

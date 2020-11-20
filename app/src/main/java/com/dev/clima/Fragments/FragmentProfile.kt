@@ -142,6 +142,7 @@ class FragmentProfile : Fragment() {
                                         documentSnapshot.getString("title"),
                                         documentSnapshot.getString("thumbnail"),
                                         documentSnapshot.getBoolean("featured"),
+                                        documentSnapshot.getBoolean("video"),
                                         documentSnapshot.getString("source")
                                 )
                                 mediaList.add(myMediaList)

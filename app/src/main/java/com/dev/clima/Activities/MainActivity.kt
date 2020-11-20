@@ -158,20 +158,36 @@ class MainActivity : AppCompatActivity() {
         navDrawerItems.add(myProfile)
 
         /*MY TASKS*/
-        val myTasks = NavigationDrawerDataClass()
-        myTasks.item_name = (getString(R.string.tasks))
-        myTasks.fragment = true
-        myTasks.fragmentName = FragmentMyTasks()
-        myTasks.image_resource = (R.drawable.tasks_icon)
-        navDrawerItems.add(myTasks)
+//        val myTasks = NavigationDrawerDataClass()
+//        myTasks.item_name = (getString(R.string.tasks))
+//        myTasks.fragment = true
+//        myTasks.fragmentName = FragmentMyTasks()
+//        myTasks.image_resource = (R.drawable.tasks_icon)
+//        navDrawerItems.add(myTasks)
+
+        /*MY SCANS*/
+        val myscans= NavigationDrawerDataClass()
+        myscans.item_name = (getString(R.string.scans))
+        myscans.activity = true
+        myscans.activityName = ActivityMyScans::class.java
+        myscans.image_resource = (R.drawable.tasks_icon)
+        navDrawerItems.add(myscans)
 
         /*SCANNER*/
-        val myScanner = NavigationDrawerDataClass()
-        myScanner.item_name = (getString(R.string.scanner))
-        myScanner.fragment = true
-        myScanner.fragmentName = FragmentScanner()
-        myScanner.image_resource = (R.drawable.bar_code_icon)
-        navDrawerItems.add(myScanner)
+//        val myScanner = NavigationDrawerDataClass()
+//        myScanner.item_name = (getString(R.string.scanner))
+//        myScanner.fragment = true
+//        myScanner.fragmentName = FragmentScanner()
+//        myScanner.image_resource = (R.drawable.bar_code_icon)
+//        navDrawerItems.add(myScanner)
+
+        /*SCANNER*/
+        val scanner = NavigationDrawerDataClass()
+        scanner.item_name = (getString(R.string.scanner))
+        scanner.activity = true
+        scanner.activityName = ActivityScanner::class.java
+        scanner.image_resource = (R.drawable.bar_code_icon)
+        navDrawerItems.add(scanner)
 
         val layoutManager = LinearLayoutManager(this)
 
@@ -192,17 +208,28 @@ class MainActivity : AppCompatActivity() {
                             val ft = supportFragmentManager.beginTransaction()
                             ft.replace(R.id.content_main, fragment)
                             ft.commit()
-                        } else if (navDrawerDataClass.item_name.equals(getString(R.string.tasks))) {
-                            fragment = navDrawerDataClass.fragmentName!!
-                            val ft = supportFragmentManager.beginTransaction()
-                            ft.replace(R.id.content_main, fragment)
-                            ft.commit()
-                        } else if (navDrawerDataClass.item_name.equals(getString(R.string.scanner))) {
-                            fragment = navDrawerDataClass.fragmentName!!
-                            val ft = supportFragmentManager.beginTransaction()
-                            ft.replace(R.id.content_main, fragment)
-                            ft.commit()
+//                        } else if (navDrawerDataClass.item_name.equals(getString(R.string.tasks))) {
+//                            fragment = navDrawerDataClass.fragmentName!!
+//                            val ft = supportFragmentManager.beginTransaction()
+//                            ft.replace(R.id.content_main, fragment)
+//                            ft.commit()
                         }
+                        else if (navDrawerDataClass.item_name.equals(getString(R.string.scanner))){
+                            val intent = Intent(this@MainActivity, navDrawerDataClass.activityName)
+                            startActivity(intent)
+                        }
+                        else if (navDrawerDataClass.item_name.equals(getString(R.string.scans))){
+
+                            val intent = Intent(this@MainActivity, navDrawerDataClass.activityName)
+                            startActivity(intent)
+
+                        }
+//                        else if (navDrawerDataClass.item_name.equals(getString(R.string.scanner))) {
+//                            fragment = navDrawerDataClass.fragmentName!!
+//                            val ft = supportFragmentManager.beginTransaction()
+//                            ft.replace(R.id.content_main, fragment)
+//                            ft.commit()
+//                        }
 
                         val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
                         drawer.closeDrawer(GravityCompat.START)

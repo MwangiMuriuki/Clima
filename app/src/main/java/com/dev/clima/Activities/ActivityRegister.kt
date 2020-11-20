@@ -171,7 +171,7 @@ class ActivityRegister : AppCompatActivity() {
                                                 error,
                                                 Toast.LENGTH_LONG
                                         ).show()
-                                    }
+                            }
                         }
                         else {
                             Toast.makeText(

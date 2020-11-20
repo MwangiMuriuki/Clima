@@ -94,6 +94,8 @@ class ActivityAllArticles : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
+            val intent: Intent? = Intent(this, MainActivity::class.java)
+            startActivity(intent)
             finish()
         }
         return super.onOptionsItemSelected(item)

@@ -124,6 +124,7 @@ class FragmentHome : Fragment() {
 
             firebaseFirestore.collection("videos and pictures")
                 .whereEqualTo("featured", true)
+                .limitToLast(4)
                 .orderBy("title", Query.Direction.ASCENDING)
                 .get()
                 .addOnCompleteListener {
@@ -135,7 +136,8 @@ class FragmentHome : Fragment() {
                                 documentSnapshot.getString("title"),
                                 documentSnapshot.getString("thumbnail"),
                                 documentSnapshot.getBoolean("featured"),
-                                    documentSnapshot.getString("source")
+                                documentSnapshot.getBoolean("video"),
+                                documentSnapshot.getString("source")
                             )
                             mediaList.add(myMediaList)
                         }

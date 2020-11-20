@@ -61,7 +61,6 @@ class ActivityAllVideos : AppCompatActivity() {
         mediaList: MutableList<VideoPicDataClass>
     ) {
         firebaseFirestore.collection("videos and pictures")
-            .whereEqualTo("featured", true)
             .orderBy("title", Query.Direction.ASCENDING)
             .get()
             .addOnCompleteListener {
@@ -69,11 +68,13 @@ class ActivityAllVideos : AppCompatActivity() {
                 if (it.isSuccessful){
                     for (documentSnapshot in it.result!!) {
 
-                        /*song_Title, song_Artist, */
                         val myMediaList = VideoPicDataClass(
                             documentSnapshot.getString("title"),
                             documentSnapshot.getString("thumbnail"),
-                            documentSnapshot.getBoolean("featured")
+                            documentSnapshot.getBoolean("featured"),
+                            documentSnapshot.getBoolean("video"),
+                            documentSnapshot.getString("source")
+
                         )
                         mediaList.add(myMediaList)
                     }
@@ -95,6 +96,8 @@ class ActivityAllVideos : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
+            val intent: Intent? = Intent(this, MainActivity::class.java)
+            startActivity(intent)
             finish()
         }
         return super.onOptionsItemSelected(item)

@@ -121,7 +121,7 @@ class ActivityAddArticle : AppCompatActivity() {
                 display_picture = downloadUri.toString()
                 val dataClassArticles = ArticlesDataClass(
                     articleTitle,
-                    articleFeaturedImage,
+                    display_picture,
                     source,
                     articleContent
                 )

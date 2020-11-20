@@ -1,12 +1,9 @@
-package com.dev.clima.Fragments
+package com.dev.clima.Activities
 
 import android.content.Intent
 import android.content.pm.PackageManager
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -16,20 +13,17 @@ import com.budiyev.android.codescanner.CodeScannerView
 import com.budiyev.android.codescanner.DecodeCallback
 import com.budiyev.android.codescanner.ErrorCallback
 import com.budiyev.android.codescanner.ScanMode
-import com.dev.clima.Activities.ActivityAllArticles
-import com.dev.clima.Activities.ActivityMyScans
-import com.dev.clima.Activities.MainActivity
 import com.dev.clima.DataClasses.ScannedPlasticsDataClass
-import com.dev.clima.DataClasses.UserDetailsDataClass
 import com.dev.clima.R
 import com.dev.clima.Utilities.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
+import kotlinx.android.synthetic.main.activity_my_scans.*
+import kotlinx.android.synthetic.main.activity_scanner.*
 import kotlinx.android.synthetic.main.fragment_scanner.*
 import kotlinx.android.synthetic.main.fragment_scanner.view.*
 
-class FragmentScanner : Fragment() {
+class ActivityScanner : AppCompatActivity() {
 
     private lateinit var codeScanner: CodeScanner
     val CAMERA_CODE: Int = 1001
@@ -42,21 +36,21 @@ class FragmentScanner : Fragment() {
     var currentUser: String? = null
     var preferenceManager: PreferenceManager? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val vw: View =  inflater.inflate(R.layout.fragment_scanner, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_scanner)
+        setSupportActionBar(scannerToolBar)
+        scannerToolBar.setNavigationIcon(R.drawable.ic_back)
+        title = "Back"
 
         setupPermissions()
 
         mAuth = FirebaseAuth.getInstance()
-        preferenceManager = PreferenceManager(requireContext())
+        preferenceManager = PreferenceManager(applicationContext)
 
-        val scannerView = vw.findViewById<CodeScannerView>(R.id.scanner_view)
+        val scannerView = findViewById<CodeScannerView>(R.id.scanner_view)
 
-        codeScanner = CodeScanner(requireContext(), scannerView)
+        codeScanner = CodeScanner(applicationContext, scannerView)
 
         // Parameters (default values)
         codeScanner.camera = CodeScanner.CAMERA_BACK // or CAMERA_FRONT or specific camera id
@@ -69,36 +63,34 @@ class FragmentScanner : Fragment() {
 
         // Callbacks
         codeScanner.decodeCallback = DecodeCallback {
-            activity?.runOnUiThread {
-                Toast.makeText(activity, it.text, Toast.LENGTH_LONG).show()
-                scannedData.text = it.text
+            this.runOnUiThread {
+                Toast.makeText(this, it.text, Toast.LENGTH_LONG).show()
+                newScannedData.text = it.text
                 capturedBarcode = it.text
             }
         }
         codeScanner.errorCallback = ErrorCallback { // or ErrorCallback.SUPPRESS
-            activity?.runOnUiThread {
-                Toast.makeText(activity, it.message, Toast.LENGTH_LONG).show()
-               // scannedData.text = it.message
+            this?.runOnUiThread {
+                Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
+                // scannedData.text = it.message
             }
         }
 
         scannerView.setOnClickListener {
-            scannedData.text = ""
+            newScannedData.text = ""
             codeScanner.startPreview()
         }
 
-        vw.btnSaveScan.setOnClickListener {
+        buttonSaveScan.setOnClickListener {
             saveScannedItem(capturedBarcode)
         }
-
-        return vw
     }
 
     private fun saveScannedItem(capturedBarcode: String?) {
         if (capturedBarcode.isNullOrEmpty()){
-            Toast.makeText(activity, "Please Scan an item to proceed", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Please Scan an item to proceed", Toast.LENGTH_LONG).show()
         }else{
-            Toast.makeText(activity, capturedBarcode, Toast.LENGTH_LONG).show()
+            Toast.makeText(this, capturedBarcode, Toast.LENGTH_LONG).show()
 
             currentUser = preferenceManager?.getFullName()
             val modelClassScanned = ScannedPlasticsDataClass(capturedBarcode)
@@ -108,14 +100,14 @@ class FragmentScanner : Fragment() {
                     if (task.isSuccessful) {
                         updateUI()
                         Toast.makeText(
-                            context,
+                            this,
                             "Scan saved.",
                             Toast.LENGTH_LONG
                         ).show()
 
                     } else {
                         Toast.makeText(
-                            context,
+                            this,
                             "Failed to save the scan. Please try again Later. ",
                             Toast.LENGTH_LONG
                         ).show()
@@ -124,7 +116,7 @@ class FragmentScanner : Fragment() {
                     var error: String? = it.toString()
 
                     Toast.makeText(
-                        context,
+                        this,
                         error,
                         Toast.LENGTH_LONG
                     ).show()
@@ -133,21 +125,20 @@ class FragmentScanner : Fragment() {
     }
 
     private fun updateUI() {
-        val intent: Intent? = Intent(context, ActivityMyScans::class.java)
-        context?.startActivity(intent)
+        val intent: Intent? = Intent(this, ActivityMyScans::class.java)
+        this.startActivity(intent)
 
     }
 
     private fun setupPermissions() {
-        val requestPermissionLauncher = ContextCompat.checkSelfPermission(requireContext(), android.Manifest.permission.CAMERA)
+        val requestPermissionLauncher = ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA)
 
         if (requestPermissionLauncher != PackageManager.PERMISSION_GRANTED){
             makeRequest()
         }
     }
-
     private fun makeRequest() {
-        ActivityCompat.requestPermissions(requireActivity(), arrayOf(android.Manifest.permission.CAMERA), CAMERA_CODE )
+        ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.CAMERA), CAMERA_CODE )
     }
 
     override fun onRequestPermissionsResult(
@@ -159,7 +150,7 @@ class FragmentScanner : Fragment() {
 
             CAMERA_CODE -> {
                 if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED){
-                    scannedData.text = "You need the camera to scan the Barcodes. Restart the app to grant permission."
+                    newScannedData.text = "You need the camera to scan the Barcodes. Restart the app to grant permission."
                 }
                 else{
                     //successful
@@ -176,16 +167,5 @@ class FragmentScanner : Fragment() {
     override fun onPause() {
         codeScanner.releaseResources()
         super.onPause()
-    }
-
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initToolBar()
-    }
-
-    private fun initToolBar() {
-        MainActivity().toggle?.isDrawerIndicatorEnabled = true
-        activity?.title = getString(R.string.scanner)
     }
 }
