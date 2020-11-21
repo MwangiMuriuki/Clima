@@ -9,6 +9,7 @@
     tools:context=".Fragments.FragmentHome">
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -26,37 +27,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Videos &amp; Pictures"
                     android:fontFamily="@font/dosis_bold"
-                    android:textSize="24sp"
-                    android:textColor="@color/textColorPrimary"/>
+                    android:text="Videos &amp; Pictures"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="24sp" />
 
                 <LinearLayout
                     android:id="@+id/showMoreMedia"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true">
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:fontFamily="@font/dosis_medium"
                         android:text="Show All"
                         android:textColor="@color/colorPrimaryDark"
-                        android:fontFamily="@font/dosis_medium"
-                        android:textSize="18sp"
-                        android:layout_marginEnd="5dp"/>
+                        android:textSize="18sp" />
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@drawable/show_all_icon"/>
+                        android:src="@drawable/show_all_icon" />
                 </LinearLayout>
 
             </RelativeLayout>
@@ -65,45 +67,46 @@
                 android:id="@+id/mediaRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="280dp"
                 android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="5dp"
+                android:minHeight="280dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="5dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Articles"
                     android:fontFamily="@font/dosis_bold"
-                    android:textSize="24sp"
-                    android:textColor="@color/textColorPrimary"/>
+                    android:text="Articles"
+                    android:textColor="@color/textColorPrimary"
+                    android:textSize="24sp" />
 
                 <LinearLayout
                     android:id="@+id/showMoreArticles"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true">
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="5dp"
+                        android:fontFamily="@font/dosis_medium"
                         android:text="Show All"
                         android:textColor="@color/colorPrimaryDark"
-                        android:fontFamily="@font/dosis_medium"
-                        android:textSize="18sp"
-                        android:layout_marginEnd="5dp"/>
+                        android:textSize="18sp" />
+
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@drawable/show_all_icon"/>
+                        android:src="@drawable/show_all_icon" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -113,8 +116,84 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:minHeight="140dp"/>
+                android:minHeight="140dp" />
 
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:layout_marginBottom="@dimen/fab_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:id="@+id/newArticleLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Article"
+                android:textColor="@color/colorWhite"
+                android:background="@color/colorAccent"
+                android:padding="5dp"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabArticle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/fab_new_article"
+                android:layout_margin="10dp"
+                app:backgroundTint="@color/colorAccent"
+                app:fabSize="mini"
+                app:rippleColor="@color/colorWhite" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/newMediaLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Video/photo"
+                android:textColor="@color/colorWhite"
+                android:background="@color/colorAccent"
+                android:padding="5dp"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabMedia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/fab_new_media"
+                android:layout_margin="10dp"
+                app:backgroundTint="@color/colorAccent"
+                app:fabSize="mini"
+                app:rippleColor="@color/colorWhite" />
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="10dp"
+            app:srcCompat="@android:drawable/ic_input_add"
+            app:backgroundTint="@color/colorAccent"/>
+
+    </LinearLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

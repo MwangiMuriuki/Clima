@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dev.clima.Adapters.AdapterScannedItems
@@ -69,6 +71,17 @@ class ActivityMyScans : AppCompatActivity() {
                     val prod = it.result!!.size() * creditVal!!
                     myCreditBalance.text = prod.toString()
 
+                    preferenceManager?.setCreditBalance(prod.toString())
+                    preferenceManager?.setTotalScans(itemNumber)
+
+                    if (it.result!!.size() > 0){
+                        placeholder.visibility = View.GONE
+                        scansRV.visibility = View.VISIBLE
+                    }else{
+                        placeholder.visibility = View.VISIBLE
+                        scansRV.visibility = View.GONE
+                    }
+
                     for (documentSnapshot in it.result!!) {
 
                         val myList = ScannedPlasticsDataClass(
@@ -90,5 +103,12 @@ class ActivityMyScans : AppCompatActivity() {
                 }
             }
 
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

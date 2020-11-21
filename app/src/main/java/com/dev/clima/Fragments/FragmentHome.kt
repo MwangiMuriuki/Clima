@@ -8,26 +8,28 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.dev.clima.Activities.ActivityAllArticles
-import com.dev.clima.Activities.ActivityAllVideos
-import com.dev.clima.Activities.MainActivity
+import com.dev.clima.Activities.*
 import com.dev.clima.Adapters.AdapterArticles
 import com.dev.clima.Adapters.AdapterVideoPic
 import com.dev.clima.DataClasses.ArticlesDataClass
 import com.dev.clima.DataClasses.VideoPicDataClass
 import com.dev.clima.R
+import com.dev.clima.Utilities.MyAnimations
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.view.*
 import java.util.*
 
 class FragmentHome : Fragment() {
 
     var firebaseFirestore: FirebaseFirestore? = null
+
+    var isRotate: Boolean? = false
 
     var adapter: AdapterVideoPic? = null
     var adapterArticles: AdapterArticles? = null
@@ -40,6 +42,9 @@ class FragmentHome : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view: View =  inflater.inflate(R.layout.fragment_home, container, false)
+
+        MyAnimations.init(view.newArticleLayout)
+        MyAnimations.init(view.newMediaLayout)
 
         var recyclerView: RecyclerView? = view.findViewById(R.id.mediaRecyclerView)
         var articlesRecyclerView: RecyclerView = view.findViewById(R.id.articlesRecyclerView)
@@ -71,6 +76,35 @@ class FragmentHome : Fragment() {
 
         showAllArticles.setOnClickListener {
             val intent: Intent = Intent(context, ActivityAllArticles::class.java)
+            context?.startActivity(intent)
+        }
+
+        view.fab.setOnClickListener {
+            isRotate = MyAnimations.rotateFab(it, !isRotate!!)
+            if(isRotate!!){
+                MyAnimations.showIn(view.newArticleLayout)
+                MyAnimations.showIn(view.newMediaLayout)
+            }else{
+                MyAnimations.showOut(view.newArticleLayout)
+                MyAnimations.showOut(view.newMediaLayout)
+            }
+        }
+
+        view.fabArticle.setOnClickListener {
+            var intent: Intent = Intent(context, ActivityAddArticle::class.java)
+            context?.startActivity(intent)
+        }
+        view.newArticleLayout.setOnClickListener {
+            var intent: Intent = Intent(context, ActivityAddArticle::class.java)
+            context?.startActivity(intent)
+        }
+
+        view.fabMedia.setOnClickListener {
+            var intent: Intent = Intent(context, ActivityAddMedia::class.java)
+            context?.startActivity(intent)
+        }
+        view.newMediaLayout.setOnClickListener {
+            var intent: Intent = Intent(context, ActivityAddMedia::class.java)
             context?.startActivity(intent)
         }
 
@@ -166,10 +200,7 @@ class FragmentHome : Fragment() {
 
     private fun initToolBar() {
         MainActivity().toggle?.isDrawerIndicatorEnabled = true
-//        (activity as AppCompatActivity).supportActionBar?.title = getString(R.string.dashboard)
-//        (activity as AppCompatActivity).supportActionBar?.setDisplayShowCustomEnabled(true)
-
-        activity?.title = getString(R.string.dashboard)
-
+        (activity as MainActivity?)!!.setActionBarTitle(getString(R.string.dashboard))
+        (activity as MainActivity?)!!.supportActionBar!!.setDisplayShowCustomEnabled(true)
     }
 }

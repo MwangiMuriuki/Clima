@@ -1,5 +1,6 @@
 package com.dev.clima.Fragments
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -8,18 +9,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.dev.clima.Activities.ActivityMyScans
 import com.dev.clima.Activities.MainActivity
-import com.dev.clima.Adapters.AdapterArticles
-import com.dev.clima.Adapters.AdapterVideoPic
+import com.dev.clima.Adapters.AdapterMyArticles
+import com.dev.clima.Adapters.AdapterProfileMedia
 import com.dev.clima.DataClasses.ArticlesDataClass
 import com.dev.clima.DataClasses.UserDetailsDataClass
 import com.dev.clima.DataClasses.VideoPicDataClass
 import com.dev.clima.R
+import com.dev.clima.Utilities.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -33,14 +37,21 @@ class FragmentProfile : Fragment() {
     private var mAuth = FirebaseAuth.getInstance()
     var firebaseFirestore = FirebaseFirestore.getInstance()
     var userLoggedIn = mAuth.currentUser
+    var currentUser: String? = null
+    var credBal: String? = null
+    var tlScans: String? = null
+
+    var preferenceManager: PreferenceManager? = null
 
     val myList: MutableList<UserDetailsDataClass> = ArrayList<UserDetailsDataClass>()
 
-    var adapterMedia: AdapterVideoPic? = null
-    var adapterArticles: AdapterArticles? = null
+    var adapterMedia: AdapterProfileMedia? = null
+    var adapterArticles: AdapterMyArticles? = null
     var gridLayoutManager: GridLayoutManager? = null
     var linearLayoutManager: LinearLayoutManager? = null
 
+    var mediaListSize: Int? = 0
+    var articleListSize: Int? = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,6 +61,25 @@ class FragmentProfile : Fragment() {
         val view: View =  inflater.inflate(R.layout.fragment_profile, container, false)
         mAuth = FirebaseAuth.getInstance()
         userLoggedIn = mAuth.currentUser
+
+        preferenceManager = PreferenceManager(requireContext())
+        currentUser = preferenceManager?.getFullName()
+        tlScans = preferenceManager?.getTotalScans()
+        credBal = preferenceManager?.getCreditBalance()
+
+        val totalPosts: TextView? = view.findViewById(R.id.totalPosts)
+
+        if (tlScans.isNullOrEmpty()){
+            view.total_scans.text = "0"
+        }else{
+            view.total_scans.text = tlScans
+        }
+
+        if (credBal.isNullOrEmpty()){
+            view.credit_balance.text = "0.00"
+        }else{
+            view.credit_balance.text = credBal
+        }
 
         val mediaRecyclerView: RecyclerView? = view.findViewById(R.id.myMediaRV)
         val articlesRecyclerView: RecyclerView = view.findViewById(R.id.myArticlesRV)
@@ -66,16 +96,22 @@ class FragmentProfile : Fragment() {
         val mediaList: MutableList<VideoPicDataClass>  = ArrayList<VideoPicDataClass>()
         val articleList: MutableList<ArticlesDataClass>  = ArrayList<ArticlesDataClass>()
 
-        adapterMedia = activity?.let { AdapterVideoPic(it, mediaList) }
+        adapterMedia = activity?.let { AdapterProfileMedia(it, mediaList) }
         mediaRecyclerView?.adapter = adapterMedia
 
-        adapterArticles = activity?.let { AdapterArticles(it, articleList) }
+        adapterArticles = activity?.let { AdapterMyArticles(it, articleList) }
         articlesRecyclerView.adapter = adapterArticles
 
         //Fetch user details from FirebaseFirestore
         getUserdetails(userLoggedIn)
-        getMyArticles(firebaseFirestore!!, adapterArticles, articleList, articlesRecyclerView, articlesPlaceholder)
-        getMyMedia(firebaseFirestore!!, adapterMedia, mediaList, mediaRecyclerView, mediaPlaceholder)
+        getMyArticles(firebaseFirestore, adapterArticles, articleList, articlesRecyclerView, articlesPlaceholder, currentUser)
+        getMyMedia(firebaseFirestore, adapterMedia, mediaList, mediaRecyclerView, mediaPlaceholder, currentUser)
+
+        view.profileScans.setOnClickListener {
+
+            val intent = Intent(requireContext(), ActivityMyScans::class.java)
+            startActivity(intent)
+        }
         
         return view
     }
@@ -123,16 +159,16 @@ class FragmentProfile : Fragment() {
         }
     }
 
-    private fun getMyMedia(firebaseFirestore: FirebaseFirestore, adapterMedia: AdapterVideoPic?, mediaList: MutableList<VideoPicDataClass>, mediaRecyclerView: RecyclerView?, mediaPlaceholder: LinearLayout) {
+     fun getMyMedia(firebaseFirestore: FirebaseFirestore, adapterMedia: AdapterProfileMedia?, mediaList: MutableList<VideoPicDataClass>, mediaRecyclerView: RecyclerView?, mediaPlaceholder: LinearLayout, currentUser: String?) {
 
         firebaseFirestore.collection("videos and pictures")
-                .whereEqualTo("featured", true)
+                .whereEqualTo("source", currentUser)
                 .limitToLast(6)
                 .orderBy("title", Query.Direction.ASCENDING)
                 .get()
                 .addOnCompleteListener {
-
                     if (it.isSuccessful){
+                        mediaListSize = it.result?.size()
                         for (documentSnapshot in it.result!!) {
                             if (documentSnapshot.data.isNotEmpty()){
                                 mediaRecyclerView?.visibility = View.VISIBLE
@@ -152,6 +188,8 @@ class FragmentProfile : Fragment() {
                             }
                         }
                         adapterMedia!!.notifyDataSetChanged()
+
+                        getTotalPosts(totalPosts)
                     }
                     else{
 
@@ -166,13 +204,15 @@ class FragmentProfile : Fragment() {
                 }
     }
 
-    private fun getMyArticles(firebaseFirestore: FirebaseFirestore, adapterArticles: AdapterArticles?, articleList: MutableList<ArticlesDataClass>, articlesRecyclerView: RecyclerView, articlesPlaceholder: LinearLayout) {
+     fun getMyArticles(firebaseFirestore: FirebaseFirestore, adapterArticles: AdapterMyArticles?, articleList: MutableList<ArticlesDataClass>, articlesRecyclerView: RecyclerView, articlesPlaceholder: LinearLayout, currentUser: String?) {
         firebaseFirestore.collection("articles")
+                .whereEqualTo("source", currentUser)
                 .orderBy("title", Query.Direction.ASCENDING)
                 .limitToLast(10)
                 .get()
                 .addOnCompleteListener {
                     if (it.isSuccessful){
+                        articleListSize = it.result?.size()
                         for (documentSnapshot in it.result!!) {
                             if (documentSnapshot.data.isNotEmpty()){
                                 articlesRecyclerView.visibility = View.VISIBLE
@@ -185,6 +225,7 @@ class FragmentProfile : Fragment() {
                                         documentSnapshot.getString("content")
                                 )
                                 articleList.add(myArticleList)
+
                             }
                             else{
                                 articlesRecyclerView.visibility = View.GONE
@@ -206,6 +247,15 @@ class FragmentProfile : Fragment() {
                 }
     }
 
+    private fun getTotalPosts(totalPosts: TextView?) {
+
+        var total: Int? = mediaListSize?.plus(articleListSize!!)
+        var totalString: String? = total.toString()
+
+        totalPosts?.text = totalString
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolBar()
@@ -213,7 +263,8 @@ class FragmentProfile : Fragment() {
 
     private fun initToolBar() {
         MainActivity().toggle?.isDrawerIndicatorEnabled = true
-        activity?.title = getString(R.string.profile)
+        (activity as MainActivity?)!!.setActionBarTitle(getString(R.string.profile))
+        (activity as MainActivity?)!!.supportActionBar!!.setDisplayShowCustomEnabled(true)
     }
 
 }

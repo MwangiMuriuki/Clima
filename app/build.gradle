@@ -74,8 +74,7 @@ dependencies {
     implementation 'com.github.zcweng:switch-button:0.0.3@aar'
     implementation 'com.github.mukeshsolanki:android-otpview-pinview:2.1.0'
 
-    //WYSIWIG EDITOR
-    implementation 'com.github.lumyjuwon:Android-Rich-Wysiwyg-Editor:1.0.0'
+    implementation 'com.github.d-max:spots-dialog:0.7@aar'
 
 
 

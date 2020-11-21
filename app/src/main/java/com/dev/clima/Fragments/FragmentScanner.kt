@@ -186,6 +186,7 @@ class FragmentScanner : Fragment() {
 
     private fun initToolBar() {
         MainActivity().toggle?.isDrawerIndicatorEnabled = true
-        activity?.title = getString(R.string.scanner)
+        (activity as MainActivity?)!!.setActionBarTitle(getString(R.string.scanner))
+        (activity as MainActivity?)!!.supportActionBar!!.setDisplayShowCustomEnabled(true)
     }
 }

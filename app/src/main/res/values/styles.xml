@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="loginAlert" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="DialogTitleText">Logging You in...</item>
+        <item name="DialogSpotColor">@color/colorAccent</item>
+        <item name="DialogSpotCount">4</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:background">@color/lightGreenBgColor</item>
+        <item name="android:fontFamily">@font/dosis_semibold</item>
+    </style>
+
+    <style name="registerAlert" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="DialogTitleText">Creating your account...</item>
+        <item name="DialogSpotColor">@color/colorAccent</item>
+        <item name="DialogSpotCount">4</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:background">@color/lightGreenBgColor</item>
+        <item name="android:fontFamily">@font/dosis_semibold</item>
+    </style>
+
+    <style name="resetPasswordAlert" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="DialogTitleText">Sending instructions to your email...</item>
+        <item name="DialogSpotColor">@color/colorAccent</item>
+        <item name="DialogSpotCount">4</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:background">@color/lightGreenBgColor</item>
+        <item name="android:fontFamily">@font/dosis_semibold</item>
+    </style>
+
+    <style name="saveScanAlert" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="DialogTitleText">Saving your scanned item...</item>
+        <item name="DialogSpotColor">@color/colorAccent</item>
+        <item name="DialogSpotCount">4</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:background">@color/lightGreenBgColor</item>
+        <item name="android:fontFamily">@font/dosis_semibold</item>
+    </style>
+
+    <style name="addMediaAlert" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="DialogTitleText">Uploading your post...</item>
+        <item name="DialogSpotColor">@color/colorAccent</item>
+        <item name="DialogSpotCount">4</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:background">@color/lightGreenBgColor</item>
+        <item name="android:fontFamily">@font/dosis_semibold</item>
+    </style>
+
+    <style name="addArticleAlert" parent="android:Theme.DeviceDefault.Dialog">
+        <item name="DialogTitleAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="DialogTitleText">Uploading your article...</item>
+        <item name="DialogSpotColor">@color/colorAccent</item>
+        <item name="DialogSpotCount">4</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
+        <item name="android:background">@color/lightGreenBgColor</item>
+        <item name="android:fontFamily">@font/dosis_semibold</item>
+    </style>
+
+
+</resources>

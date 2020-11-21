@@ -8,6 +8,7 @@ class PreferenceManager(val context: Context) {
     val PREF_NAME = "clima_prefs"
     var FULL_NAME = "FULL_NAME"
     var CREDIT_BALANCE = "CREDIT_BALANCE"
+    var TOTAL_SCANS = "TOTAL_SCANS"
 
     var sharedPreferences: SharedPreferences? = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     var preferenceEditor: SharedPreferences.Editor? = sharedPreferences?.edit()
@@ -33,6 +34,15 @@ class PreferenceManager(val context: Context) {
 
     fun setCreditBalance(creditBalance: String?) {
         preferenceEditor!!.putString(CREDIT_BALANCE, creditBalance)
+        preferenceEditor!!.commit()
+    }
+
+    fun getTotalScans(): String? {
+        return sharedPreferences!!.getString(TOTAL_SCANS, "")
+    }
+
+    fun setTotalScans(totalScans: String?) {
+        preferenceEditor!!.putString(TOTAL_SCANS, totalScans)
         preferenceEditor!!.commit()
     }
 

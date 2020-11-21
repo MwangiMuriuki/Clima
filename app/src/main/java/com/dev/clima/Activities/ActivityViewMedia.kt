@@ -13,7 +13,7 @@ import com.dev.clima.R
 import kotlinx.android.synthetic.main.activity_view_media.*
 
 
-abstract class ActivityViewMedia : AppCompatActivity() {
+class ActivityViewMedia : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,22 +29,15 @@ abstract class ActivityViewMedia : AppCompatActivity() {
 
         val thumbnailUri: Uri? = Uri.parse(passedPostThumbnail)
         sourceTextView.text = passedPostSource
+        titleTextView.text = passedPostTitle
 
         if (passedPostIsVideo == true){
             showImage.visibility = View.GONE
-            imageTitle.visibility = View.GONE
             showVideo.visibility = View.VISIBLE
-            videoTitle.visibility = View.VISIBLE
-
-            videoTitle.text = passedPostTitle
         }
         else{
             showImage.visibility = View.VISIBLE
-            imageTitle.visibility = View.VISIBLE
             showVideo.visibility = View.GONE
-            videoTitle.visibility = View.GONE
-
-            imageTitle.text = passedPostTitle
         }
 
         Glide.with(applicationContext).load(thumbnailUri).into(showImage)

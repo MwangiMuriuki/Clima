@@ -18,7 +18,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="dashboard">Dashboard</string>
-    <string name="profile">Profile</string>
+    <string name="profile">My Profile</string>
     <string name="tasks">My Tasks</string>
     <string name="scanner">Quick Scan</string>
     <string name="dummyTextMedium">Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</string>
@@ -113,5 +113,6 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="scans">My Scans</string>
+    <string name="post_article">Post Article</string>
 
 </resources>

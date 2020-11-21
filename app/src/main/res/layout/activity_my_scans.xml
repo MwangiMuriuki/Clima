@@ -168,15 +168,25 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="1dp"/>
+            android:layout_marginBottom="1dp"
+            android:visibility="gone"/>
+
+        <ImageView
+            android:id="@+id/placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/no_scans_placeholder"
+            android:visibility="visible"
+            android:layout_margin="10dp"
+            android:scaleType="centerInside"/>
     </LinearLayout>
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btnNewScan"
-        android:layout_width="200dp"
-        android:layout_height="42dp"
+        android:layout_width="300dp"
+        android:layout_height="47dp"
         android:layout_margin="10dp"
-        android:background="@drawable/login_button"
+        android:background="@drawable/accent_button_bg"
         android:text="New Scan"
         android:textColor="@color/colorWhite"
         android:layout_alignParentEnd="true"

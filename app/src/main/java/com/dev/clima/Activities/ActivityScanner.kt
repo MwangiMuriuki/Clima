@@ -1,9 +1,11 @@
 package com.dev.clima.Activities
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -18,6 +20,7 @@ import com.dev.clima.R
 import com.dev.clima.Utilities.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_my_scans.*
 import kotlinx.android.synthetic.main.activity_scanner.*
 import kotlinx.android.synthetic.main.fragment_scanner.*
@@ -29,6 +32,8 @@ class ActivityScanner : AppCompatActivity() {
     val CAMERA_CODE: Int = 1001
     val IMAGE_CODE: Int = 101
     var capturedBarcode: String? = null
+
+    var alertDialog: AlertDialog? = null
 
     var mAuth: FirebaseAuth? = null
     var myFirestore = FirebaseFirestore.getInstance()
@@ -44,6 +49,8 @@ class ActivityScanner : AppCompatActivity() {
         title = "Back"
 
         setupPermissions()
+
+        alertDialog = SpotsDialog(this, R.style.saveScanAlert)
 
         mAuth = FirebaseAuth.getInstance()
         preferenceManager = PreferenceManager(applicationContext)
@@ -90,7 +97,8 @@ class ActivityScanner : AppCompatActivity() {
         if (capturedBarcode.isNullOrEmpty()){
             Toast.makeText(this, "Please Scan an item to proceed", Toast.LENGTH_LONG).show()
         }else{
-            Toast.makeText(this, capturedBarcode, Toast.LENGTH_LONG).show()
+            alertDialog!!.setCancelable(false)
+            alertDialog!!.show()
 
             currentUser = preferenceManager?.getFullName()
             val modelClassScanned = ScannedPlasticsDataClass(capturedBarcode)
@@ -98,6 +106,7 @@ class ActivityScanner : AppCompatActivity() {
             myFirestore.collection("Scanned Plastics").document(currentUser!!).collection("Barcodes").document(capturedBarcode).set(modelClassScanned)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+                        alertDialog!!.cancel()
                         updateUI()
                         Toast.makeText(
                             this,
@@ -167,5 +176,12 @@ class ActivityScanner : AppCompatActivity() {
     override fun onPause() {
         codeScanner.releaseResources()
         super.onPause()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

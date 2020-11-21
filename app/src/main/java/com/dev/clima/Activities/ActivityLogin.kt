@@ -1,5 +1,6 @@
 package com.dev.clima.Activities
 
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
@@ -7,15 +8,17 @@ import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dev.clima.R
-import com.dev.clima.Utilities.PreferenceManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_login.*
 
 
 class ActivityLogin : AppCompatActivity() {
 
     private var mAuth: FirebaseAuth? = null
+
+    var alertDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +27,7 @@ class ActivityLogin : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
 //        preferenceManager = PreferenceManager(applicationContext)
 
+        alertDialog = SpotsDialog(this, R.style.loginAlert)
 
         forgotPassword.setOnClickListener {
             val intent: Intent = Intent(applicationContext, ActivityResetPassword::class.java)
@@ -68,6 +72,8 @@ class ActivityLogin : AppCompatActivity() {
             ).show()
         }
         else{
+            alertDialog!!.setCancelable(false)
+            alertDialog!!.show()
             signInUser(emailAddress, password)
         }
     }
@@ -77,17 +83,19 @@ class ActivityLogin : AppCompatActivity() {
         mAuth?.signInWithEmailAndPassword(emailAddress, password)?.addOnCompleteListener {
             if (it.isSuccessful){
                 val user = mAuth!!.currentUser
+                alertDialog!!.cancel()
                 toMain(user)
             }
             else{
-
                 // If sign in fails, display a message to the user.
                 Log.w(ContentValues.TAG, "signInWithEmail:failure", it.exception)
                 Toast.makeText(
                     this@ActivityLogin,
                     "Login failed. A user with that Email and Password does not exist. Please try again.",
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_LONG
                 ).show()
+
+                alertDialog!!.cancel()
             }
         }
 

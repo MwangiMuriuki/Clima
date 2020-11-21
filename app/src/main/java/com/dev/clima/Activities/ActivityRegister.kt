@@ -1,5 +1,6 @@
 package com.dev.clima.Activities
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.theartofdev.edmodo.cropper.CropImage
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_register.*
 
 class ActivityRegister : AppCompatActivity() {
@@ -31,6 +33,8 @@ class ActivityRegister : AppCompatActivity() {
     var display_picture: String? = null
     var downloadUri: String? = null
 
+    var alertDialog: AlertDialog? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +42,8 @@ class ActivityRegister : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
         storageReference = FirebaseStorage.getInstance().reference
+
+        alertDialog = SpotsDialog(this, R.style.registerAlert)
 
         buttonCreateAccount.setOnClickListener {
             validateFields()
@@ -115,6 +121,8 @@ class ActivityRegister : AppCompatActivity() {
                 .show()
         }
         else{
+           alertDialog!!.setCancelable(false)
+           alertDialog!!.show()
             registerNewUser(fullName, emailAddress, password)
         }
     }
@@ -123,6 +131,7 @@ class ActivityRegister : AppCompatActivity() {
 
         mAuth?.createUserWithEmailAndPassword(emailAddress, password)?.addOnCompleteListener {
             if (it.isSuccessful){
+                alertDialog!!.cancel()
                 // Sign in success, update UI with the signed-in user's information
                 Log.d("SUCCESS_TAG", "createUserWithEmail:success")
                 val user = mAuth!!.currentUser

@@ -100,18 +100,17 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
                         android:fontFamily="@font/dosis_semibold"
-                        android:text="Your Balance:"
+                        android:text="Credit Balance:"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/accBalance"
+                        android:id="@+id/credBalance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-
                         android:layout_marginBottom="5dp"
                         android:fontFamily="@font/dosis_bold"
-                        android:text="$2.35"
+                        android:text="0.00"
                         android:textColor="@color/colorPrimaryDark"
                         android:textSize="26sp" />
 

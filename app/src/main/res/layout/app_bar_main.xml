@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorWhite"
                 android:text=""
-                android:textSize="22sp"
+                android:textSize="24sp"
                 android:fontFamily="@font/dosis_semibold"
                 style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                 android:layout_gravity="center"
@@ -34,6 +34,5 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_main" />
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

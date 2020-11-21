@@ -1,5 +1,6 @@
 package com.dev.clima.Activities
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import com.theartofdev.edmodo.cropper.CropImage
+import dmax.dialog.SpotsDialog
 import kotlinx.android.synthetic.main.activity_add_article.*
 import kotlinx.android.synthetic.main.activity_register.*
 
@@ -23,6 +25,8 @@ class ActivityAddArticle : AppCompatActivity() {
     var myFirestore = FirebaseFirestore.getInstance()
     var storageReference: StorageReference? = null
     var myUploadTask: UploadTask? = null
+
+    var alertDialog: AlertDialog? = null
 
     var display_picture: String? = null
     var downloadUri: String? = null
@@ -40,6 +44,8 @@ class ActivityAddArticle : AppCompatActivity() {
         storageReference = FirebaseStorage.getInstance().reference
 
         preferenceManager = PreferenceManager(applicationContext)
+        alertDialog = SpotsDialog(this, R.style.addArticleAlert)
+
 
         btnPost.setOnClickListener {
             validateFields()
@@ -94,6 +100,8 @@ class ActivityAddArticle : AppCompatActivity() {
             ).show()
         }
         else{
+            alertDialog!!.setCancelable(false)
+            alertDialog!!.show()
             createNewArticle(articleTitle, articleContent, articleFeaturedImage, currentUser)
         }
     }
@@ -128,6 +136,7 @@ class ActivityAddArticle : AppCompatActivity() {
                 myFirestore.collection("articles").document(articleTitle).set(dataClassArticles)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
+                            alertDialog!!.cancel()
                             updateUI()
                             Toast.makeText(
                                 this@ActivityAddArticle,
@@ -135,6 +144,8 @@ class ActivityAddArticle : AppCompatActivity() {
                                 Toast.LENGTH_LONG
                             ).show()
                         } else {
+                            alertDialog!!.cancel()
+
                             Toast.makeText(
                                 applicationContext,
                                 "Error when posting article. Please try again Later. ",
@@ -143,6 +154,7 @@ class ActivityAddArticle : AppCompatActivity() {
                         }
                     }.addOnFailureListener {
                         var error: String? = task.exception.toString()
+                        alertDialog!!.cancel()
 
                         Toast.makeText(
                             applicationContext,
@@ -152,6 +164,8 @@ class ActivityAddArticle : AppCompatActivity() {
                     }
             }
             else {
+                alertDialog!!.cancel()
+
                 Toast.makeText(
                     applicationContext,
                     "Error Posting Article. Please try again Later. ",

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -21,9 +22,7 @@ import com.dev.clima.Adapters.NavigationDrawerAdapter
 import com.dev.clima.DataClasses.NavigationDrawerDataClass
 import com.dev.clima.DataClasses.UserDetailsDataClass
 import com.dev.clima.Fragments.FragmentHome
-import com.dev.clima.Fragments.FragmentMyTasks
 import com.dev.clima.Fragments.FragmentProfile
-import com.dev.clima.Fragments.FragmentScanner
 import com.dev.clima.R
 import com.dev.clima.Utilities.PreferenceManager
 import com.google.android.material.navigation.NavigationView
@@ -43,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     var userLoggedIn = mAuth.currentUser
     var preferenceManager: PreferenceManager? = null
 
+    var toolBarText: TextView? = null
 
     val myList: MutableList<UserDetailsDataClass> = ArrayList<UserDetailsDataClass>()
 
@@ -50,10 +50,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
+        toolBarText = toolbar.findViewById<TextView>(R.id.toolbar_title)
         setSupportActionBar(toolbar)
-        supportActionBar!!.setDisplayShowTitleEnabled(true)
+        supportActionBar!!.setDisplayShowTitleEnabled(false)
 
         preferenceManager = PreferenceManager(applicationContext)
+
+        val creditBalance: String? = preferenceManager!!.getCreditBalance()
+
+        if (creditBalance.isNullOrEmpty()){
+            credBalance.text = "0.00"
+        }else{
+            credBalance.text = creditBalance
+        }
 
         recyclerView = findViewById(R.id.navItemslist)
 
@@ -100,7 +109,7 @@ class MainActivity : AppCompatActivity() {
 
                             if (pic != null) {
                                 val imageUri = Uri.parse(documentSnapshot.getString("display_picture"))
-                                Glide.with(this@MainActivity).load(imageUri).into(userProfilePicture)
+                                Glide.with(this).load(imageUri).into(userProfilePicture)
                             }
                         }
                         else {
@@ -122,10 +131,17 @@ class MainActivity : AppCompatActivity() {
         logout.setOnClickListener {
             val logout = Intent(applicationContext, ActivityLogin::class.java)
             mAuth.signOut()
+            preferenceManager?.setFullName("")
+            preferenceManager?.setCreditBalance("")
+            preferenceManager?.setTotalScans("")
             startActivity(logout)
             finish()
         }
 
+    }
+
+    fun setActionBarTitle(title: String?) {
+        toolBarText?.text = title
     }
     /*SET UP DASHBOARD AS DEFAULT SREEN*/
     private fun showMainFragment() {
@@ -240,7 +256,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.main, menu)
+        //menuInflater.inflate(R.menu.main, menu)
         return true
     }
 
