@@ -181,10 +181,11 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/postTitleTV"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="40dp"
                         android:fontFamily="@font/dosis_medium"
                         android:gravity="center_vertical"
-                        android:inputType="text"
+                        android:inputType="textMultiLine"
                         android:padding="5dp"
                         android:textColor="@color/textColorPrimary"
                         android:textSize="18sp" />

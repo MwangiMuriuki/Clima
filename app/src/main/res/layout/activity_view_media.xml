@@ -93,6 +93,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@id/footer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -106,7 +107,7 @@
             android:layout_height="50dp"
             android:text="Title goes here. How Does it look. Title goes here. How Does it look"
             android:fontFamily="@font/dosis_medium"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:maxLines="2"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
@@ -134,6 +135,7 @@
             android:text="Source:"
             android:fontFamily="@font/dosis_semibold"
             android:textSize="16sp"
+            android:textStyle="italic"
             android:layout_marginStart="5dp"
             android:textColor="@color/colorWhite"/>
 
@@ -142,12 +144,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
+            android:textStyle="italic"
             android:fontFamily="@font/dosis_medium"
             android:textSize="16sp"
             android:maxLines="1"
             android:layout_marginStart="3dp"
+            android:paddingEnd="2dp"
             android:textColor="@color/colorWhite"/>
-
 
     </LinearLayout>
 

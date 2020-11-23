@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -41,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     var firebaseFirestore = FirebaseFirestore.getInstance()
     var userLoggedIn = mAuth.currentUser
     var preferenceManager: PreferenceManager? = null
+    var currentUser: String? = null
 
     var toolBarText: TextView? = null
 
@@ -105,12 +107,15 @@ class MainActivity : AppCompatActivity() {
                             val fname = documentSnapshot.getString("full_Name")
                             val pic = documentSnapshot.getString("display_picture")
                             profileUserName.text = fname
+                            currentUser = fname
                             preferenceManager?.setFullName(fname)
 
                             if (pic != null) {
                                 val imageUri = Uri.parse(documentSnapshot.getString("display_picture"))
                                 Glide.with(this).load(imageUri).into(userProfilePicture)
                             }
+
+                            getAllScans(currentUser)
                         }
                         else {
                             Log.e("SNAPSHOT_ERROR", "User Does not exist")
@@ -138,6 +143,38 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
+       // getAllScans
+
+    }
+
+     private fun getAllScans(currentUser: String?) {
+         //currentUser = preferenceManager?.getFullName()
+
+        firebaseFirestore.collection("Scanned Plastics")
+                .document(currentUser!!)
+                .collection("Barcodes")
+                .get()
+                .addOnCompleteListener {
+                    if (it.isSuccessful){
+                        val itemNumber: String? = it.result!!.size().toString()
+                        val creditVal: Double? = 0.25
+                        val prod = it.result!!.size() * creditVal!!
+                        credBalance.text = prod.toString()
+
+                        preferenceManager?.setCreditBalance(prod.toString())
+                        preferenceManager?.setTotalScans(itemNumber)
+
+                    }
+                    else{
+
+                        Toast.makeText(
+                                this,
+                                "Error Getting info:" + it.exception?.message.toString(),
+                                Toast.LENGTH_LONG
+                        ).show()
+                        Log.e("article_ERROR_TAG", it.exception?.message.toString())
+                    }
+                }
     }
 
     fun setActionBarTitle(title: String?) {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.dev.clima">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -16,31 +17,95 @@
         android:roundIcon="@drawable/app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.Clima">
+
         <activity android:name=".Activities.ActivityScanner"
-            android:theme="@style/Theme.Clima.NoActionBar"/>
+            android:theme="@style/Theme.Clima.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:supportsPictureInPicture="true"
+            tools:ignore="LockedOrientationActivity"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            tools:targetApi="n" />
+
         <activity
             android:name=".Activities.ActivityMyScans"
-            android:theme="@style/Theme.Clima.NoActionBar" />
+            android:theme="@style/Theme.Clima.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:supportsPictureInPicture="true"
+            tools:ignore="LockedOrientationActivity"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            tools:targetApi="n" />
+
         <activity
             android:name=".Activities.ActivityViewMedia"
-            android:theme="@style/Theme.Clima.NoActionBar" />
+            android:theme="@style/Theme.Clima.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:supportsPictureInPicture="true"
+            tools:ignore="LockedOrientationActivity"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            tools:targetApi="n" />
+
         <activity
             android:name=".Activities.ActivityAddMedia"
-            android:theme="@style/Theme.Clima.NoActionBar" />
+            android:theme="@style/Theme.Clima.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:supportsPictureInPicture="true"
+            tools:ignore="LockedOrientationActivity"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            tools:targetApi="n" />
+
         <activity
             android:name=".Activities.ActivityAddArticle"
-            android:theme="@style/Theme.Clima.NoActionBar" />
+            android:theme="@style/Theme.Clima.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:supportsPictureInPicture="true"
+            tools:ignore="LockedOrientationActivity"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            tools:targetApi="n" />
+
         <activity
             android:name=".Activities.ActivitySingleArticle"
             android:label="@string/title_activity_single_article"
-            android:theme="@style/Theme.Clima.NoActionBar" />
+            android:theme="@style/Theme.Clima.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:supportsPictureInPicture="true"
+            tools:ignore="LockedOrientationActivity"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            tools:targetApi="n" />
+
         <activity
             android:name=".Activities.ActivityAllArticles"
-            android:theme="@style/Theme.Clima.NoActionBar" />
-        <activity android:name=".Activities.ActivityPhotos" />
+            android:theme="@style/Theme.Clima.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:supportsPictureInPicture="true"
+            tools:ignore="LockedOrientationActivity"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            tools:targetApi="n" />
+
+        <activity android:name=".Activities.ActivityPhotos"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:supportsPictureInPicture="true"
+            tools:ignore="LockedOrientationActivity"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            tools:targetApi="n" />
+
         <activity
             android:name=".Activities.ActivityAllVideos"
-            android:theme="@style/Theme.Clima.NoActionBar" />
+            android:theme="@style/Theme.Clima.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:supportsPictureInPicture="true"
+            tools:ignore="LockedOrientationActivity"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            tools:targetApi="n" />
+
         <activity android:name=".Activities.ActivityCheckLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,20 +113,49 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".Activities.ActivityResetPassword"
-            android:theme="@style/Theme.Clima.NoActionBar" />
+            android:theme="@style/Theme.Clima.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:supportsPictureInPicture="true"
+            tools:ignore="LockedOrientationActivity"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            tools:targetApi="n" />
+
         <activity
             android:name=".Activities.ActivityRegister"
-            android:theme="@style/Theme.Clima.NoActionBar" />
+            android:theme="@style/Theme.Clima.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:supportsPictureInPicture="true"
+            tools:ignore="LockedOrientationActivity"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            tools:targetApi="n" />
+
         <activity
             android:name=".Activities.ActivityLogin"
             android:label="Clima"
-            android:theme="@style/Theme.Clima.NoActionBar" />
+            android:theme="@style/Theme.Clima.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:supportsPictureInPicture="true"
+            tools:ignore="LockedOrientationActivity"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            tools:targetApi="n" />
+
         <activity
             android:name=".Activities.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Clima.NoActionBar" />
+            android:theme="@style/Theme.Clima.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode"
+            android:supportsPictureInPicture="true"
+            tools:ignore="LockedOrientationActivity"
+            android:resizeableActivity="true"
+            android:screenOrientation="portrait"
+            tools:targetApi="n" />
+
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
@@ -69,6 +163,7 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="barcode" />

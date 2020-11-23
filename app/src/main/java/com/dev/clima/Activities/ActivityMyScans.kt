@@ -52,7 +52,7 @@ class ActivityMyScans : AppCompatActivity() {
 
     }
 
-    private fun getAllScans(
+    fun getAllScans(
         firebaseFirestore: FirebaseFirestore,
         adapterScans: AdapterScannedItems,
         scannedList: MutableList<ScannedPlasticsDataClass>
@@ -102,11 +102,12 @@ class ActivityMyScans : AppCompatActivity() {
                     Log.e("article_ERROR_TAG", it.exception?.message.toString())
                 }
             }
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
+            val intent: Intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
             finish()
         }
         return super.onOptionsItemSelected(item)
