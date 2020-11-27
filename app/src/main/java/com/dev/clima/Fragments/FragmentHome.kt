@@ -20,6 +20,9 @@ import com.dev.clima.DataClasses.ArticlesDataClass
 import com.dev.clima.DataClasses.VideoPicDataClass
 import com.dev.clima.R
 import com.dev.clima.Utilities.MyAnimations
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_home.view.*
@@ -36,6 +39,8 @@ class FragmentHome : Fragment() {
     var gridLayoutManager: GridLayoutManager? = null
     var linearLayoutManager: LinearLayoutManager? = null
 
+    private lateinit var mInterstitialAd: InterstitialAd
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,6 +50,18 @@ class FragmentHome : Fragment() {
 
         MyAnimations.init(view.newArticleLayout)
         MyAnimations.init(view.newMediaLayout)
+
+        mInterstitialAd = InterstitialAd(context)
+        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd.loadAd(AdRequest.Builder().build())
+
+        mInterstitialAd.adListener = object : AdListener() {
+            override fun onAdClosed() {
+                mInterstitialAd.loadAd(AdRequest.Builder().build())
+                val intent: Intent = Intent(context, ActivityAllVideos::class.java)
+                context?.startActivity(intent)
+            }
+        }
 
         var recyclerView: RecyclerView? = view.findViewById(R.id.mediaRecyclerView)
         var articlesRecyclerView: RecyclerView = view.findViewById(R.id.articlesRecyclerView)
@@ -70,6 +87,17 @@ class FragmentHome : Fragment() {
         getArticles(firebaseFirestore!!, adapterArticles, articleList)
 
         showAllMedia.setOnClickListener {
+
+//            if (mInterstitialAd.isLoaded) {
+//                mInterstitialAd.show()
+//                Log.d("AD_TAG", "The interstitial Ad has loaded")
+//
+//            } else {
+//                Log.d("AD_TAG", "The interstitial wasn't loaded yet.")
+//
+//
+//            }
+
             val intent: Intent = Intent(context, ActivityAllVideos::class.java)
             context?.startActivity(intent)
         }

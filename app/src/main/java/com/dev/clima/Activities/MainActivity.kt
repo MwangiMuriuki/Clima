@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     var userLoggedIn = mAuth.currentUser
     var preferenceManager: PreferenceManager? = null
     var currentUser: String? = null
+    var currentUserID: String? = null
 
     var toolBarText: TextView? = null
 
@@ -105,17 +106,20 @@ class MainActivity : AppCompatActivity() {
                             myList.add(userData)
 
                             val fname = documentSnapshot.getString("full_Name")
+                            val userID = documentSnapshot.getString("user_id")
                             val pic = documentSnapshot.getString("display_picture")
                             profileUserName.text = fname
                             currentUser = fname
+                            currentUserID = userID
                             preferenceManager?.setFullName(fname)
+                            preferenceManager?.setUserId(userID)
 
                             if (pic != null) {
                                 val imageUri = Uri.parse(documentSnapshot.getString("display_picture"))
                                 Glide.with(this).load(imageUri).into(userProfilePicture)
                             }
 
-                            getAllScans(currentUser)
+                            getAllScans(currentUser, currentUserID)
                         }
                         else {
                             Log.e("SNAPSHOT_ERROR", "User Does not exist")
@@ -143,15 +147,13 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-       // getAllScans
-
     }
 
-     private fun getAllScans(currentUser: String?) {
+     private fun getAllScans(currentUser: String?, currentUserID: String?) {
          //currentUser = preferenceManager?.getFullName()
 
         firebaseFirestore.collection("Scanned Plastics")
-                .document(currentUser!!)
+                .document(currentUserID!!)
                 .collection("Barcodes")
                 .get()
                 .addOnCompleteListener {

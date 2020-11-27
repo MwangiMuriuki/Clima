@@ -76,6 +76,8 @@ dependencies {
 
     implementation 'com.github.d-max:spots-dialog:0.7@aar'
 
+    implementation 'com.google.android.gms:play-services-ads:17.2.1'
+
 
 
 

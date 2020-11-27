@@ -7,6 +7,7 @@ class PreferenceManager(val context: Context) {
 
     val PREF_NAME = "clima_prefs"
     var FULL_NAME = "FULL_NAME"
+    var USER_ID = "USER_ID"
     var CREDIT_BALANCE = "CREDIT_BALANCE"
     var TOTAL_SCANS = "TOTAL_SCANS"
 
@@ -25,6 +26,15 @@ class PreferenceManager(val context: Context) {
 
     fun setFullName(fullName: String?) {
         preferenceEditor!!.putString(FULL_NAME, fullName)
+        preferenceEditor!!.commit()
+    }
+
+    fun getUserId(): String? {
+        return sharedPreferences!!.getString(USER_ID, "")
+    }
+
+    fun setUserId(userId: String?) {
+        preferenceEditor!!.putString(USER_ID, userId)
         preferenceEditor!!.commit()
     }
 

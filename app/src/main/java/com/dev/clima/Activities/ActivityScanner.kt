@@ -18,9 +18,12 @@ import com.budiyev.android.codescanner.ScanMode
 import com.dev.clima.DataClasses.ScannedPlasticsDataClass
 import com.dev.clima.R
 import com.dev.clima.Utilities.PreferenceManager
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dmax.dialog.SpotsDialog
+import kotlinx.android.synthetic.main.activity_all_articles.*
 import kotlinx.android.synthetic.main.activity_my_scans.*
 import kotlinx.android.synthetic.main.activity_scanner.*
 import kotlinx.android.synthetic.main.fragment_scanner.*
@@ -39,6 +42,7 @@ class ActivityScanner : AppCompatActivity() {
     var myFirestore = FirebaseFirestore.getInstance()
 
     var currentUser: String? = null
+    var currentUserID: String? = null
     var preferenceManager: PreferenceManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +58,10 @@ class ActivityScanner : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
         preferenceManager = PreferenceManager(applicationContext)
+
+        MobileAds.initialize(this@ActivityScanner)
+        val adRequest = AdRequest.Builder().build()
+        adViewScanner.loadAd(adRequest)
 
         val scannerView = findViewById<CodeScannerView>(R.id.scanner_view)
 
@@ -77,7 +85,7 @@ class ActivityScanner : AppCompatActivity() {
             }
         }
         codeScanner.errorCallback = ErrorCallback { // or ErrorCallback.SUPPRESS
-            this?.runOnUiThread {
+            this.runOnUiThread {
                 Toast.makeText(this, it.message, Toast.LENGTH_LONG).show()
                 // scannedData.text = it.message
             }
@@ -101,9 +109,10 @@ class ActivityScanner : AppCompatActivity() {
             alertDialog!!.show()
 
             currentUser = preferenceManager?.getFullName()
+            currentUserID = preferenceManager?.getUserId()
             val modelClassScanned = ScannedPlasticsDataClass(capturedBarcode)
 
-            myFirestore.collection("Scanned Plastics").document(currentUser!!).collection("Barcodes").document(capturedBarcode).set(modelClassScanned)
+            myFirestore.collection("Scanned Plastics").document(currentUserID!!).collection("Barcodes").document(capturedBarcode).set(modelClassScanned)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         alertDialog!!.cancel()

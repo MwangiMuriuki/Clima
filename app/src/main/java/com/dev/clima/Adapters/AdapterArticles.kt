@@ -15,7 +15,7 @@ import com.dev.clima.DataClasses.ArticlesDataClass
 import com.dev.clima.DataClasses.VideoPicDataClass
 import com.dev.clima.R
 
-class AdapterArticles(val context: Context, val vidPicList: List<ArticlesDataClass>) :
+class AdapterArticles(val context: Context, var articlesList: List<ArticlesDataClass>) :
     RecyclerView.Adapter<ArticlesViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticlesViewHolder {
         val inflater = LayoutInflater.from(context)
@@ -24,7 +24,7 @@ class AdapterArticles(val context: Context, val vidPicList: List<ArticlesDataCla
 
     override fun onBindViewHolder(holder: ArticlesViewHolder, position: Int) {
 
-        val articleList: ArticlesDataClass = vidPicList[position]
+        val articleList: ArticlesDataClass = articlesList[position]
 
         val articleTitle: String? = articleList.title
         val articleSource: String? = articleList.source
@@ -48,7 +48,13 @@ class AdapterArticles(val context: Context, val vidPicList: List<ArticlesDataCla
     }
 
     override fun getItemCount(): Int {
-       return vidPicList.size
+       return articlesList.size
+    }
+
+    fun filterList(filteredList: MutableList<ArticlesDataClass>) {
+
+        articlesList = filteredList
+        notifyDataSetChanged()
     }
 }
 

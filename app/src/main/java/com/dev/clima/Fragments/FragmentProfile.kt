@@ -4,17 +4,16 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.dev.clima.Activities.ActivityEditProfile
 import com.dev.clima.Activities.ActivityMyScans
 import com.dev.clima.Activities.MainActivity
 import com.dev.clima.Adapters.AdapterMyArticles
@@ -30,7 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.fragment_profile.view.*
-import java.util.ArrayList
+import java.util.*
 
 class FragmentProfile : Fragment() {
 
@@ -38,6 +37,7 @@ class FragmentProfile : Fragment() {
     var firebaseFirestore = FirebaseFirestore.getInstance()
     var userLoggedIn = mAuth.currentUser
     var currentUser: String? = null
+    var currentUserID: String? = null
     var credBal: String? = null
     var tlScans: String? = null
 
@@ -53,17 +53,23 @@ class FragmentProfile : Fragment() {
     var mediaListSize: Int? = 0
     var articleListSize: Int? = 0
 
+    var fullName: String? = null
+    var profileImage: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view: View =  inflater.inflate(R.layout.fragment_profile, container, false)
+        setHasOptionsMenu(true)
+
         mAuth = FirebaseAuth.getInstance()
         userLoggedIn = mAuth.currentUser
 
         preferenceManager = PreferenceManager(requireContext())
         currentUser = preferenceManager?.getFullName()
+        currentUserID = preferenceManager?.getUserId()
         tlScans = preferenceManager?.getTotalScans()
         credBal = preferenceManager?.getCreditBalance()
 
@@ -104,8 +110,24 @@ class FragmentProfile : Fragment() {
 
         //Fetch user details from FirebaseFirestore
         getUserdetails(userLoggedIn)
-        getMyArticles(firebaseFirestore, adapterArticles, articleList, articlesRecyclerView, articlesPlaceholder, currentUser)
-        getMyMedia(firebaseFirestore, adapterMedia, mediaList, mediaRecyclerView, mediaPlaceholder, currentUser)
+        getMyArticles(
+            firebaseFirestore,
+            adapterArticles,
+            articleList,
+            articlesRecyclerView,
+            articlesPlaceholder,
+            currentUser,
+            currentUserID
+        )
+        getMyMedia(
+            firebaseFirestore,
+            adapterMedia,
+            mediaList,
+            mediaRecyclerView,
+            mediaPlaceholder,
+            currentUser,
+            currentUserID
+        )
 
         view.profileScans.setOnClickListener {
 
@@ -116,7 +138,7 @@ class FragmentProfile : Fragment() {
         return view
     }
 
-    private fun getUserdetails(userLoggedIn: FirebaseUser?) {
+     fun getUserdetails(userLoggedIn: FirebaseUser?) {
 
         if (userLoggedIn != null) {
             val userID: String = userLoggedIn!!.uid
@@ -127,20 +149,25 @@ class FragmentProfile : Fragment() {
                             val documentSnapshot = task.result
                             if (documentSnapshot != null && documentSnapshot.exists()) {
                                 val userData = UserDetailsDataClass(
-                                        documentSnapshot.getString("full_Name"),
-                                        documentSnapshot.getString("email"),
-                                        documentSnapshot.getString("user_id"),
-                                        documentSnapshot.getString("display_picture")
+                                    documentSnapshot.getString("full_Name"),
+                                    documentSnapshot.getString("email"),
+                                    documentSnapshot.getString("user_id"),
+                                    documentSnapshot.getString("display_picture")
                                 )
                                 myList.add(userData)
 
+                                fullName = documentSnapshot.getString("full_Name")
+                                profileImage = documentSnapshot.getString("display_picture")
+
                                 val fname = documentSnapshot.getString("full_Name")
                                 val pic = documentSnapshot.getString("display_picture")
-                                view?.userFullName?.text = fname
+                                view?.userFullName?.text = fullName
 
-                                if (pic != null) {
+                                if (profileImage != null) {
                                     val imageUri = Uri.parse(documentSnapshot.getString("display_picture"))
-                                    view?.displayPhoto?.let { Glide.with(requireActivity()).load(imageUri).into(it) }
+                                    view?.displayPhoto?.let { Glide.with(requireActivity()).load(
+                                        imageUri
+                                    ).into(it) }
                                 }
                             }
                             else {
@@ -159,10 +186,18 @@ class FragmentProfile : Fragment() {
         }
     }
 
-     fun getMyMedia(firebaseFirestore: FirebaseFirestore, adapterMedia: AdapterProfileMedia?, mediaList: MutableList<VideoPicDataClass>, mediaRecyclerView: RecyclerView?, mediaPlaceholder: LinearLayout, currentUser: String?) {
+     fun getMyMedia(
+         firebaseFirestore: FirebaseFirestore,
+         adapterMedia: AdapterProfileMedia?,
+         mediaList: MutableList<VideoPicDataClass>,
+         mediaRecyclerView: RecyclerView?,
+         mediaPlaceholder: LinearLayout,
+         currentUser: String?,
+         currentUserID: String?
+     ) {
 
         firebaseFirestore.collection("videos and pictures")
-                .whereEqualTo("source", currentUser)
+                .whereEqualTo("source", currentUserID)
                 .limitToLast(6)
                 .orderBy("title", Query.Direction.ASCENDING)
                 .get()
@@ -175,11 +210,11 @@ class FragmentProfile : Fragment() {
                                 mediaPlaceholder.visibility = View.GONE
 
                                 val myMediaList = VideoPicDataClass(
-                                        documentSnapshot.getString("title"),
-                                        documentSnapshot.getString("thumbnail"),
-                                        documentSnapshot.getBoolean("featured"),
-                                        documentSnapshot.getBoolean("video"),
-                                        documentSnapshot.getString("source")
+                                    documentSnapshot.getString("title"),
+                                    documentSnapshot.getString("thumbnail"),
+                                    documentSnapshot.getBoolean("featured"),
+                                    documentSnapshot.getBoolean("video"),
+                                    documentSnapshot.getString("source")
                                 )
                                 mediaList.add(myMediaList)
                             }else{
@@ -194,9 +229,9 @@ class FragmentProfile : Fragment() {
                     else{
 
                         Toast.makeText(
-                                context,
-                                "Error Getting info:" + it.exception?.message.toString(),
-                                Toast.LENGTH_LONG
+                            context,
+                            "Error Getting info:" + it.exception?.message.toString(),
+                            Toast.LENGTH_LONG
                         ).show()
                         Log.e("INDEX_ERROR_TAG", it.exception?.message.toString())
 
@@ -204,9 +239,17 @@ class FragmentProfile : Fragment() {
                 }
     }
 
-     fun getMyArticles(firebaseFirestore: FirebaseFirestore, adapterArticles: AdapterMyArticles?, articleList: MutableList<ArticlesDataClass>, articlesRecyclerView: RecyclerView, articlesPlaceholder: LinearLayout, currentUser: String?) {
+     fun getMyArticles(
+         firebaseFirestore: FirebaseFirestore,
+         adapterArticles: AdapterMyArticles?,
+         articleList: MutableList<ArticlesDataClass>,
+         articlesRecyclerView: RecyclerView,
+         articlesPlaceholder: LinearLayout,
+         currentUser: String?,
+         currentUserID: String?
+     ) {
         firebaseFirestore.collection("articles")
-                .whereEqualTo("source", currentUser)
+                .whereEqualTo("source", currentUserID)
                 .orderBy("title", Query.Direction.ASCENDING)
                 .limitToLast(10)
                 .get()
@@ -219,10 +262,10 @@ class FragmentProfile : Fragment() {
                                 articlesPlaceholder.visibility = View.GONE
 
                                 val myArticleList = ArticlesDataClass(
-                                        documentSnapshot.getString("title"),
-                                        documentSnapshot.getString("image"),
-                                        documentSnapshot.getString("source"),
-                                        documentSnapshot.getString("content")
+                                    documentSnapshot.getString("title"),
+                                    documentSnapshot.getString("image"),
+                                    documentSnapshot.getString("source"),
+                                    documentSnapshot.getString("content")
                                 )
                                 articleList.add(myArticleList)
 
@@ -237,9 +280,9 @@ class FragmentProfile : Fragment() {
                     else{
 
                         Toast.makeText(
-                                context,
-                                "Error Getting info:" + it.exception?.message.toString(),
-                                Toast.LENGTH_LONG
+                            context,
+                            "Error Getting info:" + it.exception?.message.toString(),
+                            Toast.LENGTH_LONG
                         ).show()
                         Log.e("article_ERROR_TAG", it.exception?.message.toString())
 
@@ -265,6 +308,25 @@ class FragmentProfile : Fragment() {
         MainActivity().toggle?.isDrawerIndicatorEnabled = true
         (activity as MainActivity?)!!.setActionBarTitle(getString(R.string.profile))
         (activity as MainActivity?)!!.supportActionBar!!.setDisplayShowCustomEnabled(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+       // inflater.inflate(R.menu.profile_menu, menu)
+
+        val myInflater: MenuInflater = inflater
+        inflater.inflate(R.menu.profile_menu, menu)
+
+        super.onCreateOptionsMenu(menu, myInflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_edit) {
+            val intent: Intent = Intent(context, ActivityEditProfile::class.java)
+            intent.putExtra("fullName", fullName)
+            intent.putExtra("profileImage", profileImage)
+            startActivity(intent)
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 }

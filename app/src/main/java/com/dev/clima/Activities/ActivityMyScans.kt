@@ -23,6 +23,7 @@ class ActivityMyScans : AppCompatActivity() {
     var linearLayoutManager: LinearLayoutManager? = null
 
     var currentUser: String? = null
+    var currentUserID: String? = null
     var preferenceManager: PreferenceManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,9 +59,10 @@ class ActivityMyScans : AppCompatActivity() {
         scannedList: MutableList<ScannedPlasticsDataClass>
     ) {
         currentUser = preferenceManager?.getFullName()
+        currentUserID = preferenceManager?.getUserId()
 
         firebaseFirestore.collection("Scanned Plastics")
-            .document(currentUser!!)
+            .document(currentUserID!!)
             .collection("Barcodes")
             .get()
             .addOnCompleteListener {

@@ -11,14 +11,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.dev.clima.Activities.ActivitySingleArticle
 import com.dev.clima.Activities.ActivityViewMedia
-import com.dev.clima.DataClasses.NavigationDrawerDataClass
 import com.dev.clima.DataClasses.VideoPicDataClass
 import com.dev.clima.R
-import com.google.common.reflect.Reflection.getPackageName
 
-class AdapterVideoPic(val context: Context, val vidPicList: List<VideoPicDataClass>) :
+class AdapterVideoPic(val context: Context, var vidPicList: List<VideoPicDataClass>) :
     RecyclerView.Adapter<VideopicViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideopicViewHolder {
         val inflater = LayoutInflater.from(context)
@@ -57,10 +54,16 @@ class AdapterVideoPic(val context: Context, val vidPicList: List<VideoPicDataCla
     override fun getItemCount(): Int {
         return vidPicList.size
     }
+
+    fun filterList(filteredList: MutableList<VideoPicDataClass>) {
+        vidPicList = filteredList
+        notifyDataSetChanged()
+    }
 }
 
 class VideopicViewHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(
-    inflater.inflate(R.layout.single_media_list_item, parent, false)){
+    inflater.inflate(R.layout.single_media_list_item, parent, false)
+){
 
     var title: TextView? = null
     var thumbnail: ImageView? = null

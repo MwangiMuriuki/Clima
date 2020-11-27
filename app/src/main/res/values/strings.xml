@@ -114,5 +114,7 @@
     </string>
     <string name="scans">My Scans</string>
     <string name="post_article">Post Article</string>
+    <string name="action_search">Search</string>
+    <string name="action_edit">Edit Profile</string>
 
 </resources>

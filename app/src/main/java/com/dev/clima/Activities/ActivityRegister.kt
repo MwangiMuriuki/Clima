@@ -153,8 +153,8 @@ class ActivityRegister : AppCompatActivity() {
                             display_picture = downloadUri.toString()
                             val modelClassUsers = UserDetailsDataClass(
                                 fullName,
-                                emailAddress,
                                 userID,
+                                emailAddress,
                                 display_picture
                             )
                             myFirestore.collection("Users").document(userID).set(modelClassUsers)
